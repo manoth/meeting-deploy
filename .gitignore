@@ -1,0 +1,7 @@
+api/node_modules/*
+api/typings/*
+api/npm-debug.log
+api/.settings/*
+api/.git/*
+api/bower_components/*
+db/*

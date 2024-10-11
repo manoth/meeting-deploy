@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:10.6
+    container_name: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=654321
+      - MYSQL_DATABASE=db_meeting_room
+      - MYSQL_USER=meeting
+      - MYSQL_PASSWORD=123456
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db:/var/lib/mysql
+    networks:
+      - meeting_network
+  
+  web:
+    depends_on:
+      - db
+    image: nginx:1.13.0-alpine
+    container_name: nginx-web
+    restart: always
+    ports: 
+      - "80:80"
+    volumes: 
+      - ./html/:/usr/share/nginx/html
+    networks:
+      - meeting_network
+
+  api:
+    depends_on:
+      - db
+    build: ./api
+    container_name: api
+    volumes:
+      - ./api/src/:/home/api/src/
+      - ./api/app/:/home/api/app/
+      - ./api/config.conf:/home/api/config.conf:rw
+      - ./api/pm2.json:/home/api/pm2.json:rw
+    restart: always
+    entrypoint:
+      - PORT=3000
+      - MYSQL_TYPE=mysql
+      - MYSQL_HOST=localhost
+      - MYSQL_PORT=3306
+      - MYSQL_USER=meeting
+      - MYSQL_PASSWORD='123456'
+      - MYSQL_DATABASE=db_meeting_room
+      - MYSQL_CHARSET=utf8
+      - MYSQL_TIMEZONE=UTC
+      - SECRET_KEY=e210245736292ce42f625bc28376e44cc73e582802d85e9cbc2da55e983f
+    ports:
+      - "3000:3000"
+    networks:
+      - meeting_network 
+
+networks:
+  meeting_network:
+    driver: bridge
