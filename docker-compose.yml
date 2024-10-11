@@ -37,7 +37,6 @@ services:
     volumes:
       - ./api/src/:/home/api/src/
       - ./api/app/:/home/api/app/
-      - ./api/config.conf:/home/api/config.conf:rw
       - ./api/pm2.json:/home/api/pm2.json:rw
     restart: always
     environment:
