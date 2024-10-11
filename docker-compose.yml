@@ -40,10 +40,10 @@ services:
       - ./api/config.conf:/home/api/config.conf:rw
       - ./api/pm2.json:/home/api/pm2.json:rw
     restart: always
-    entrypoint:
+    environment:
       - PORT=3000
       - MYSQL_TYPE=mysql
-      - MYSQL_HOST=localhost
+      - MYSQL_HOST=db
       - MYSQL_PORT=3306
       - MYSQL_USER=meeting
       - MYSQL_PASSWORD='123456'
